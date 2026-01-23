@@ -11,5 +11,5 @@ spec:
     spec:
       containers:
         - name: supporting-material-manager
-          image: gravitate-registry.cr.de-fra.ionos.com/supporting-material-manager:latest
+          image: ghcr.io/gravitate-health/supporting-material-manager:latest
           resources: {}

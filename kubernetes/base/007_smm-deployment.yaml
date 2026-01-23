@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: supporting-material-manager
-          image: gravitate-registry.cr.de-fra.ionos.com/supporting-material-manager:v0.1.0
+          image: ghcr.io/gravitate-health/supporting-material-manager:v0.1.0
           ports:
             - containerPort: 3000
           envFrom:
