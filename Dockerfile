@@ -1,4 +1,4 @@
-FROM node:19-slim 
+FROM node:22-slim 
 
 ENV APP_PORT=3000
 
