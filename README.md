@@ -47,11 +47,11 @@ By following the instructions on the [MinIO documentation](https://min.io/docs/m
 | Variable name | Example value | Description|
 |---------------|---------------|------------|
 | APP_PORT | 3000 | The port where the application will run |
-| MINIO_URL | localhost | The URL of the MinIO server |
-| MINIO_PORT | 9000 | The port of the MinIO server |
-| ACCESS_KEY | \<access-key> | The access key for the MinIO server |
-| SECRET_KEY | \<secret-key> | The secret key for the MinIO server |
-| FHIR_URL | https://\<fhir-server>/ips/api/fhir/ | The URL of the FHIR server |
+| MINIO_URL | localhost | The URL to configure the MinIO client |
+| MINIO_PORT | 9000 | The port to configure the MinIO client |
+| MINIO_ACCESS_KEY | \<access-key> | The access key for the MinIO client |
+| MINIO_SECRET_KEY | \<secret-key> | The secret key for the MinIO client |
+| FHIR_URL | https://\<fhir-server>/api/fhir/ | The URL of the FHIR server |
 | GH_BUCKET | gh-bucket | The name of the bucket in the MinIO server |
 | API_URL | https://\<url>:3000 | The URL of the API |
 

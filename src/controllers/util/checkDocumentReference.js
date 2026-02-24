@@ -4,7 +4,7 @@ const axios = require('axios');
 async function checkDocumentIdentifier(identifierValue) {
     const FHIR_URL = process.env.FHIR_URL
     try {
-        const response = await axios.get("https://" + FHIR_URL+'DocumentReference?_format=json');
+        const response = await axios.get(FHIR_URL+'/DocumentReference?_format=json');
         const documentReferences = response.data;
 
         for (let entry of documentReferences.entry) {

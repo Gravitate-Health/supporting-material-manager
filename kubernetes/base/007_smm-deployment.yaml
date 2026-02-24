@@ -21,13 +21,13 @@ spec:
             - configMapRef:
                 name: supporting-material-manager
           env:
-          - name: ACCESS_KEY
+          - name: MINIO_ACCESS_KEY
             valueFrom:
               secretKeyRef:
                 name: minio-secret
                 key: minio.root.user
                 optional: false
-          - name: SECRET_KEY
+          - name: MINIO_SECRET_KEY
             valueFrom:
               secretKeyRef:
                 name: minio-secret
