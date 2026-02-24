@@ -8,4 +8,3 @@ data:
   MINIO_PORT: "9000"
   FHIR_URL: "https://fosps.gravitatehealth.eu/epi/api/fhir"
   GH_BUCKET: "gh-bucket"
-  API_URL: "https://fosps.gravitatehealth.eu/bucket"

@@ -53,7 +53,6 @@ By following the instructions on the [MinIO documentation](https://min.io/docs/m
 | MINIO_SECRET_KEY | \<secret-key> | The secret key for the MinIO client |
 | FHIR_URL | https://\<fhir-server>/api/fhir/ | The URL of the FHIR server |
 | GH_BUCKET | gh-bucket | The name of the bucket in the MinIO server |
-| API_URL | https://\<url>:3000 | The URL of the API |
 
 
 ## Development

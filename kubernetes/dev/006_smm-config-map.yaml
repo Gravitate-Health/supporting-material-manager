@@ -5,4 +5,3 @@ metadata:
 data:
   FHIR_URL: "https://gravitate-health.lst.tfo.upm.es/epi/api/fhir"
   GH_BUCKET: "gh-bucket"
-  API_URL: "https://gravitate-health.lst.tfo.upm.es/bucket"

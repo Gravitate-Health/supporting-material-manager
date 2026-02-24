@@ -7,9 +7,6 @@ const checkDocumentIdentifier = require("../controllers/util/checkDocumentRefere
 const { response } = require('express');
 const { log } = require('console');
 
-const API_URL = process.env.API_URL
-
-
 
 async function testConn (req, res) {
 
@@ -91,7 +88,7 @@ async function uploadFile (req, res) {
                 "attachment": {
                   "contentType": fileInfo.attachment.contentType,
                   "language": fileInfo.attachment.language,
-                  "url":  API_URL + "/smm/resource/"+ imageName,
+                  "url":  `${req.protocol}://${req.get('host')}/smm/resource/${imageName}`,
                   "size": fileInfo.attachment.size,
                   "title": fileInfo.attachment.title,
                   "creation": fileInfo.attachment.creation,
