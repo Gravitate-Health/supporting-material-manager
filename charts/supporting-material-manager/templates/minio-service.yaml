@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "supporting-material-manager.minioName" . }}-service
+  labels:
+    {{- include "supporting-material-manager.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.minio.service.type }}
+  selector:
+    {{- include "supporting-material-manager.selectorLabels" . | nindent 4 }}
+    app.kubernetes.io/component: minio
+  ports:
+    - name: data
+      protocol: TCP
+      port: {{ .Values.minio.service.dataPort }}
+      targetPort: {{ .Values.minio.service.dataPort }}
+    - name: ui
+      protocol: TCP
+      port: {{ .Values.minio.service.uiPort }}
+      targetPort: {{ .Values.minio.service.uiPort }}

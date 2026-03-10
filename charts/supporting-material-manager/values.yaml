@@ -1,0 +1,92 @@
+nameOverride: ""
+fullnameOverride: ""
+
+replicaCount:
+  app: 1
+  minio: 1
+
+image:
+  repository: ghcr.io/gravitate-health/supporting-material-manager
+  tag: "v0.1.0"
+  pullPolicy: IfNotPresent
+
+minio:
+  image:
+    repository: quay.io/minio/minio
+    tag: latest
+    pullPolicy: IfNotPresent
+  mcImage:
+    repository: quay.io/minio/mc
+    tag: latest
+    pullPolicy: IfNotPresent
+  service:
+    type: ClusterIP
+    dataPort: 9000
+    uiPort: 9001
+  pvc:
+    enabled: true
+    accessModes:
+      - ReadWriteOnce
+    size: 10Gi
+    storageClassName: ""
+  env:
+    domain: fosps.gravitatehealth.eu
+    browserRedirectUrl: https://fosps.gravitatehealth.eu/bucket/
+
+service:
+  type: ClusterIP
+  port: 3000
+  targetPort: 3000
+
+resources:
+  app:
+    limits: {}
+    requests: {}
+  minio:
+    limits: {}
+    requests: {}
+
+config:
+  APP_PORT: "3000"
+  MINIO_URL: ""
+  MINIO_PORT: "9000"
+  FHIR_URL: "https://fosps.gravitatehealth.eu/epi/api/fhir"
+  GH_BUCKET: "gh-bucket"
+  API_URL: "https://fosps.gravitatehealth.eu/bucket"
+
+secret:
+  # Do not place real credentials in source control.
+  minioRootUser: ""
+  minioRootPassword: ""
+
+networking:
+  # Supported values: istio, ingress, none
+  # - istio: renders VirtualServices (and optional Gateway)
+  # - ingress: renders a Kubernetes Ingress
+  # - none: renders neither Istio nor Ingress resources
+  type: istio
+  istio:
+    hosts:
+      - "*"
+    gateway:
+      enabled: false
+      name: gh-gateway
+    smmPathPrefix: /smm/
+    minioPathPrefix: /bucket/
+    minioPathExact: /bucket
+  ingress:
+    className: ""
+    annotations: {}
+    hosts:
+      - host: ""
+        paths:
+          - path: /smm/
+            pathType: Prefix
+            service: app
+          - path: /bucket/
+            pathType: Prefix
+            service: minio-ui
+          - path: /bucket
+            pathType: Exact
+            service: minio-ui
+    tls: []

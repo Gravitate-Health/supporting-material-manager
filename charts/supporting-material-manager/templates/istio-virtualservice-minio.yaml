@@ -1,0 +1,26 @@
+{{- if eq .Values.networking.type "istio" }}
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: {{ include "supporting-material-manager.minioName" . }}
+  labels:
+    {{- include "supporting-material-manager.labels" . | nindent 4 }}
+spec:
+  hosts:
+    {{- toYaml .Values.networking.istio.hosts | nindent 4 }}
+  gateways:
+    - {{ .Values.networking.istio.gateway.name }}
+  http:
+    - match:
+        - uri:
+            prefix: {{ .Values.networking.istio.minioPathPrefix }}
+        - uri:
+            exact: {{ .Values.networking.istio.minioPathExact }}
+      rewrite:
+        uri: "/"
+      route:
+        - destination:
+            host: {{ include "supporting-material-manager.minioName" . }}-service.{{ .Release.Namespace }}.svc.cluster.local
+            port:
+              number: {{ .Values.minio.service.uiPort }}
+{{- end }}

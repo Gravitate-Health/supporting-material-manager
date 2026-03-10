@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "supporting-material-manager.minioName" . }}
+  labels:
+    {{- include "supporting-material-manager.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount.minio }}
+  selector:
+    matchLabels:
+      {{- include "supporting-material-manager.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: minio
+  template:
+    metadata:
+      labels:
+        {{- include "supporting-material-manager.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/component: minio
+    spec:
+      containers:
+        - name: minio
+          image: "{{ .Values.minio.image.repository }}:{{ .Values.minio.image.tag }}"
+          imagePullPolicy: {{ .Values.minio.image.pullPolicy }}
+          command:
+            - /bin/bash
+            - -c
+          args:
+            - minio server /data --console-address :{{ .Values.minio.service.uiPort }}
+          env:
+            - name: MINIO_ROOT_USER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "supporting-material-manager.secretName" . }}
+                  key: minio.root.user
+                  optional: false
+            - name: MINIO_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "supporting-material-manager.secretName" . }}
+                  key: minio.root.password
+                  optional: false
+            - name: MINIO_DOMAIN
+              value: {{ .Values.minio.env.domain | quote }}
+            - name: MINIO_BROWSER_REDIRECT_URL
+              value: {{ .Values.minio.env.browserRedirectUrl | quote }}
+          resources:
+            {{- toYaml .Values.resources.minio | nindent 12 }}
+          volumeMounts:
+            - mountPath: /data
+              name: minio-storage
+      volumes:
+        - name: minio-storage
+          {{- if .Values.minio.pvc.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ include "supporting-material-manager.minioName" . }}-pvc
+          {{- else }}
+          emptyDir: {}
+          {{- end }}

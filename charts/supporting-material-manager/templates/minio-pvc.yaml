@@ -1,0 +1,17 @@
+{{- if .Values.minio.pvc.enabled }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ include "supporting-material-manager.minioName" . }}-pvc
+  labels:
+    {{- include "supporting-material-manager.labels" . | nindent 4 }}
+spec:
+  accessModes:
+    {{- toYaml .Values.minio.pvc.accessModes | nindent 4 }}
+  resources:
+    requests:
+      storage: {{ .Values.minio.pvc.size }}
+  {{- if .Values.minio.pvc.storageClassName }}
+  storageClassName: {{ .Values.minio.pvc.storageClassName }}
+  {{- end }}
+{{- end }}

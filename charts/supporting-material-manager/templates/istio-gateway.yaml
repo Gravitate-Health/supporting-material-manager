@@ -1,0 +1,18 @@
+{{- if and (eq .Values.networking.type "istio") .Values.networking.istio.gateway.enabled }}
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: {{ .Values.networking.istio.gateway.name }}
+  labels:
+    {{- include "supporting-material-manager.labels" . | nindent 4 }}
+spec:
+  selector:
+    istio: ingressgateway
+  servers:
+    - port:
+        number: 80
+        name: http
+        protocol: HTTP
+      hosts:
+        {{- toYaml .Values.networking.istio.hosts | nindent 8 }}
+{{- end }}

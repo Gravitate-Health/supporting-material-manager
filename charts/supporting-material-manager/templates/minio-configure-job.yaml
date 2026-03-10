@@ -1,0 +1,41 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ include "supporting-material-manager.fullname" . }}-configure-minio
+  labels:
+    {{- include "supporting-material-manager.labels" . | nindent 4 }}
+spec:
+  template:
+    metadata:
+      labels:
+        {{- include "supporting-material-manager.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/component: minio-config
+    spec:
+      containers:
+        - name: configure-minio
+          image: "{{ .Values.minio.mcImage.repository }}:{{ .Values.minio.mcImage.tag }}"
+          imagePullPolicy: {{ .Values.minio.mcImage.pullPolicy }}
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              while ! mc alias set myminio http://{{ include "supporting-material-manager.minioName" . }}-service:{{ .Values.minio.service.dataPort }} $MINIO_ROOT_USER $MINIO_ROOT_PASSWORD; do
+                echo "Waiting for MinIO to be ready..."
+                sleep 5
+              done
+              mc mb --ignore-existing myminio/{{ .Values.config.GH_BUCKET }} && \
+              mc anonymous set download myminio/{{ .Values.config.GH_BUCKET }}
+              exit 0
+          env:
+            - name: MINIO_ROOT_USER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "supporting-material-manager.secretName" . }}
+                  key: minio.root.user
+                  optional: false
+            - name: MINIO_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "supporting-material-manager.secretName" . }}
+                  key: minio.root.password
+                  optional: false
+      restartPolicy: Never

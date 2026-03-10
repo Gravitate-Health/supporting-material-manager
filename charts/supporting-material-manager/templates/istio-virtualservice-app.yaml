@@ -1,0 +1,22 @@
+{{- if eq .Values.networking.type "istio" }}
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: {{ include "supporting-material-manager.appName" . }}
+  labels:
+    {{- include "supporting-material-manager.labels" . | nindent 4 }}
+spec:
+  hosts:
+    {{- toYaml .Values.networking.istio.hosts | nindent 4 }}
+  gateways:
+    - {{ .Values.networking.istio.gateway.name }}
+  http:
+    - match:
+        - uri:
+            prefix: {{ .Values.networking.istio.smmPathPrefix }}
+      route:
+        - destination:
+            host: {{ include "supporting-material-manager.appName" . }}.{{ .Release.Namespace }}.svc.cluster.local
+            port:
+              number: {{ .Values.service.port }}
+{{- end }}

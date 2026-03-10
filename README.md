@@ -36,6 +36,23 @@ kubectl apply -k ./kubernetes/base
 kubectl apply -k ./kubernetes/dev
 ```
 
+### Deploy via Helm (OCI)
+
+```bash
+# Login to registry (if private)
+helm registry login ghcr.io
+
+# Deploy directly from the registry
+helm install my-release oci://ghcr.io/<your-org>/charts/<chart-name> --version <version>
+```
+
+### Local Development
+
+```bash
+helm lint ./charts/supporting-material-manager
+helm template my-release ./charts/supporting-material-manager
+```
+
 ### Security guidelines for MinIO
 
 By following the instructions on the [MinIO documentation](https://min.io/docs/minio/kubernetes/upstream/administration/identity-access-management.html#minio-authentication-and-identity-management) you can set the IAM through OIDC for the integration with Keycloak

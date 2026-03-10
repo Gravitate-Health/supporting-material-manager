@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "supporting-material-manager.appName" . }}
+  labels:
+    {{- include "supporting-material-manager.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount.app }}
+  selector:
+    matchLabels:
+      {{- include "supporting-material-manager.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: app
+  template:
+    metadata:
+      labels:
+        {{- include "supporting-material-manager.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/component: app
+    spec:
+      containers:
+        - name: {{ include "supporting-material-manager.name" . }}
+          image: "{{ .Values.image.repository }}:{{ default .Chart.AppVersion .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - containerPort: {{ .Values.service.targetPort }}
+          envFrom:
+            - configMapRef:
+                name: {{ include "supporting-material-manager.configMapName" . }}
+          env:
+            - name: MINIO_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "supporting-material-manager.secretName" . }}
+                  key: minio.root.user
+                  optional: false
+            - name: MINIO_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "supporting-material-manager.secretName" . }}
+                  key: minio.root.password
+                  optional: false
+          resources:
+            {{- toYaml .Values.resources.app | nindent 12 }}
