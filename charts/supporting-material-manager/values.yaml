@@ -61,15 +61,15 @@ secret:
 
 networking:
   # Supported values: istio, ingress, none
-  # - istio: renders VirtualServices (and optional Gateway)
+  # - istio: renders VirtualServices that reference an existing Gateway
   # - ingress: renders a Kubernetes Ingress
   # - none: renders neither Istio nor Ingress resources
   type: istio
   istio:
     hosts:
       - "*"
+    # Reference to an existing Istio Gateway (must be created externally)
     gateway:
-      enabled: false
       name: gh-gateway
     smmPathPrefix: /smm/
     minioPathPrefix: /bucket/
